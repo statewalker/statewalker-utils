@@ -1,6 +1,5 @@
 // See https://github.com/agenjs/agen-utils/blob/main/src/iterator.js
-export default async function* iterate(init, newQueue = (() => [])) {
-  const queue = newQueue();
+export default async function* iterate(init, queue = []) {
   let promise, notify, push = async (error, value, done) => {
     const slot = { error, value, done };
     slot.promise = new Promise(n => slot.notify = n);
@@ -9,12 +8,10 @@ export default async function* iterate(init, newQueue = (() => [])) {
     notify = null;
     return slot.promise;
   }
-  const unsubscribe = init({
-    next: (value) => push(undefined, value, false),
-    complete: () => push(undefined, undefined, true),
-    error: err => push(err, undefined, true)
-  });
-
+  const next = (value) => push(undefined, value, false);
+  const complete = () => push(undefined, undefined, true);
+  const error = err => push(err, undefined, true);
+  const unsubscribe = init(Object.assign([next, complete, error], { next, complete, error }));
   let slot;
   try {
     while (true) {
