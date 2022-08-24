@@ -91,5 +91,42 @@ This method allows to register multiple callbacks and call all of them later.
 // - "Three"
   cleanup();
 
+```
 
+## iterate(init)
+
+This method allows to define an async iterator using the following method provided in the activation callback:
+- next - returns the next value
+- complete - notifies about a successful completion of the iteration process
+- error - finalizes iterations with an error
+
+```javascript
+// In this example the provider and consumer are synchronized between them:
+// the provider sends a new value only after the previous one was sucecssfully consumed.
+// This iterator allows also to terminate the iteration by both sides - by consumer
+// as well as by provider.
+const maxDelay = 1000;
+const N = 100;
+
+const it = iterate(({ next, complete, error }) => { 
+  let stop = false;
+  (async () => {
+    // Async process providing new values
+    for (let i = 0; !stop && i < N; i++) {
+       await new Promise(y => setTimeout(y, maxDelay * Math.random()));
+      // Awaits when the provided value is consumed
+      await next(`Hello - ${i}`)
+    }
+    await complete();
+  })();
+  // Finalizes iterations
+  return () => stop = true;
+})
+
+
+// Async consumption of provided messages.
+for await (let message of it) {
+  console.log(message);
+  await new Promise(y => setTimeout(y, maxDelay * Math.random()));
+}
 ```
