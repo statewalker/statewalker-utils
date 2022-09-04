@@ -130,3 +130,119 @@ for await (let message of it) {
   await new Promise(y => setTimeout(y, maxDelay * Math.random()));
 }
 ```
+
+
+## newUpdatesTracker()
+
+This method returns a function allowing to tracks data modifications.
+
+Callback methods used to notify about new elements (`onEnter`), about removed data values (`onExit`)
+and about updated elements (`onUpdate`):
+```javascript
+
+  // This method is called to notify about new elements in the data array.
+  // @params
+  // * value - the data value
+  // * key - the key of the data element; if the `getKey` function is not defined then it is the data object itself
+  // * index - index (position) of this data element in the list
+  // @return: an newly created object associated with the given data value
+  const onEnter = (value, key, index) => { ... return { value } }
+
+  // Callback method to call when a data was removed from the data list.
+  // @params
+  // * object - the object corresponding to the data
+  // * value - the data value
+  // * key - the key of the data element; if the `getKey` function is not defined then it is the data object itself
+  // * index - index (position) of this data element in the previous list, before removal
+  // @return: undefined; this method should return nothing 
+  const onExit = (object, value, key, index) => { ... }
+
+  // Callback method to call when a data was updated.
+  // @params
+  // * object - previously returned object corresponding to the data with the same key
+  // * value - the data value
+  // * key - the key of the data element; if the `getKey` function is not defined then it is the data object itself
+  // * index - index (position) of this data element in the list
+  // @return: an object associated with the updated data value; if this method returns nothing 
+  // then the previous object is used
+  const onUpdate = (object, value, key, index) => { ... return { value } }
+```
+
+To get the unique identity of each data values the `getKey` method used:
+```javascript
+
+  // This method is used to detect the unique identifier of the object. If this method is not defined
+  // the the object itself is used as the key.
+  // @params
+  // * value - the data value in the data list
+  // * index - index (position) of the value in the list
+  const getKey = (value, index) => { return value; }
+```
+
+Update tracker initialization:
+```javascript
+
+  // Creates a new tracker object
+  let tracker = newUpdatesTracker({ onEnter, onExit, onUpdate, getKey });
+
+  // Alternatively, the same configuration can be done like that:
+  tracker = newUpdatesTracker()
+    .key(getKey)
+    .update(onUpdate)
+    .exit(onExit)
+    .enter(onEnter);
+
+```
+
+Example of usage of these methods:
+```javascript
+
+  const container = document.body;
+
+  // Creates a new tracker object
+  let tracker = newUpdatesTracker()
+    .key((d) => d.id)
+    .enter((d, key, idx) => {
+      const div = document.createElement("div");
+      container.appendChild(div);
+      div.innerText = d.content;
+      return div;
+    })
+    .update((div, d, key, idx) => {
+      div.innerText = d.content;
+      container.appendChild(div); // Move the element to the new position
+      return div;
+    })
+    .exit((div, d, key, idx) => {
+      div.parentElement.removeChild(div);
+    });
+  
+  // Set the initial values:
+  tracker([
+    { id : 1, content : "Hello" },
+    { id : 2, content : "Wonderful" },
+    { id : 3, content : "World" },
+  ]);
+
+
+  // Update data:
+  tracker([
+    { id : 1, content : "Hello" },
+    { id : 2, content : "Beautiful" }, // Only this value is updated
+    { id : 3, content : "World" },
+  ]);
+
+  // The second data update:
+  // - id=0: insert a new line ("New information")
+  // - id=1: no changes ("Hello")
+  // - id=2: diseapears ("Beautiful")
+  // - id=5: insert ("John")
+  // - id=3: updated ("World" => "Smith")
+  tracker([
+    { id : 0, content : "New information" },
+    { id : 1, content : "Hello" },
+    { id : 5, content : "John" },
+    { id : 3, content : "Smith" },
+  ]);
+
+```
