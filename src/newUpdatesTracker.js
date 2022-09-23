@@ -13,7 +13,7 @@ export default function newUpdatesTracker({
       let slot = index.get(key);
       const idx = list.length;
       let item = slot
-        ? onUpdate(slot[0], value, slot[1], key, idx)
+        ? onUpdate(slot[0], value, slot[1], key, idx, slot[2])
         : onEnter(value, key, idx);
       if (item === undefined && slot) item = slot[0];
       slot = [item, value, idx];

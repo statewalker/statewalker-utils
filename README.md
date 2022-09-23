@@ -160,12 +160,20 @@ and about updated elements (`onUpdate`):
   // Callback method to call when a data was updated.
   // @params
   // * object - previously returned object corresponding to the data with the same key
-  // * value - the data value
+  // * value - the data value in the list
+  // * prevValue - previous data value corresponding to the same key
   // * key - the key of the data element; if the `getKey` function is not defined then it is the data object itself
   // * index - index (position) of this data element in the list
+  // * prevIndex - previous index (position) of this data element in the list
   // @return: an object associated with the updated data value; if this method returns nothing 
   // then the previous object is used
-  const onUpdate = (object, value, key, index) => { ... return { value } }
+  const onUpdate = (
+    object,
+    value, prevValue,
+    key,
+    index, prevIndex
+  ) => { ... return { value } }
+
 ```
 
 To get the unique identity of each data values the `getKey` method used:
@@ -208,7 +216,7 @@ Example of usage of these methods:
       div.innerText = d.content;
       return div;
     })
-    .update((div, d, key, idx) => {
+    .update((div, d, oldD, key, idx, prevIdx) => {
       div.innerText = d.content;
       container.appendChild(div); // Move the element to the new position
       return div;
