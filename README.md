@@ -1,9 +1,11 @@
 # @statewalker/utils: Common Utility Methods and Classes
 
 This package contains the following classes and methods used in other packages:
-* newEventEmitter - basic event emitter with three methods: "on", "off", "emit"
-* newMutex - mutual exclusion function; used to avoid infinite recursive calls
-* newRegestry - registers methods to call at once; very useful when it is required to cleanup resources
+* `newEventEmitter` - basic event emitter with three methods: "on", "off", "emit"
+* `newMutex` - mutual exclusion function; used to avoid infinite recursive calls
+* `newRegestry` - registers methods to call at once; very useful when it is required to cleanup resources
+* `iterate` - async iterator properly managing backpressure 
+* `newUpdatesTracker` - tracking list changes and executing `enter`/`exit`/`update` operations on each item
 
 ## newEventEmitter()
 
@@ -93,7 +95,7 @@ This method allows to register multiple callbacks and call all of them later.
 
 ```
 
-## iterate(init)
+## iterate(init)
 
 This method allows to define an async iterator using the following method provided in the activation callback:
 - next - returns the next value
