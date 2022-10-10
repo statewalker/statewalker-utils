@@ -1,5 +1,11 @@
 # @statewalker/utils
 
+## 0.4.1
+
+### Patch Changes
+
+- Update/fix documentation
+
 ## 0.4.0
 
 ### Minor Changes
