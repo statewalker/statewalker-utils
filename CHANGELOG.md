@@ -1,5 +1,11 @@
 # @statewalker/utils
 
+## 0.4.2
+
+### Patch Changes
+
+- Update rollup and dependencies
+
 ## 0.4.1
 
 ### Patch Changes

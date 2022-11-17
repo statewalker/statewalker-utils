@@ -1,6 +1,6 @@
 {
   "name": "@statewalker/utils",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Utility methods and classes used in Statewalker projects",
   "keywords": [],
   "homepage": "https://github.com/statewalker/statewalker-utils",
@@ -25,7 +25,7 @@
     "default": "./src/index.js"
   },
   "devDependencies": {
-    "@statewalker/rollup": "^0.1.5",
+    "@statewalker/rollup": "^0.1.6",
     "eslint": "^8",
     "expect.js": "^0.3",
     "mocha": "^10",
